@@ -20,6 +20,6 @@ public class MailServer {
      * @param messageContent the message content
      */
     public void send(String addresses, String messageContent) {
-
+        ioManager.print(addresses + ": <<" + messageContent + ">>");
     }
 }

@@ -3,6 +3,8 @@ package com.epam.ld.module2.testing.template;
 import com.epam.ld.module2.testing.Client;
 import com.epam.ld.module2.testing.util.IOManager;
 
+import java.util.List;
+
 /**
  * The type Template engine.
  */
@@ -31,6 +33,14 @@ public class TemplateEngine {
      * @return the string
      */
     public String generateMessage(Template template, Client client) {
-        return null;
+        String body = template.getMessageBody();
+        List<String> inputs = ioManager.read();
+        if (inputs.size() < template.getPlaceholders().size()) {
+            throw new IllegalArgumentException("Not enough placeholders");
+        }
+        for (int i = 0; i < template.getPlaceholders().size(); i++) {
+            body = body.replace(template.getPlaceholders().get(i), inputs.get(i));
+        }
+        return body;
     }
 }
