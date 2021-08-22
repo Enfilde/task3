@@ -4,6 +4,7 @@ package com.epam.ld.module2.testing;
  * The type Client.
  */
 public class Client {
+
     private String address;
 
     /**
@@ -12,7 +13,7 @@ public class Client {
      * @return the addresses
      */
     public String getAddress() {
-        return address ;
+        return address;
     }
 
     /**

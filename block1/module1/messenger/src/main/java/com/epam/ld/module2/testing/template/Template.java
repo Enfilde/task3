@@ -5,10 +5,10 @@ import java.util.List;
 /**
  * The type Template.
  */
-public class Template {
+public final class Template {
 
-    private String messageBody;
-    private List<String> placeholders;
+    private final String messageBody;
+    private final List<String> placeholders;
 
     public Template(String body, List<String> placeholders) {
         this.messageBody = body;
@@ -19,15 +19,7 @@ public class Template {
         return placeholders;
     }
 
-    public void setPlaceholders(List<String> placeholders) {
-        this.placeholders = placeholders;
-    }
-
     public String getMessageBody() {
         return messageBody;
-    }
-
-    public void setMessageBody(String messageBody) {
-        this.messageBody = messageBody;
     }
 }

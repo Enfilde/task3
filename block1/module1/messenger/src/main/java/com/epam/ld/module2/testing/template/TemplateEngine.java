@@ -38,7 +38,7 @@ public class TemplateEngine {
         if (inputs.size() < template.getPlaceholders().size()) {
             throw new IllegalArgumentException("Not enough placeholders");
         }
-        for (int i = 0; i < template.getPlaceholders().size(); i++) {
+        for (var i = 0; i < template.getPlaceholders().size(); i++) {
             body = body.replace(template.getPlaceholders().get(i), inputs.get(i));
         }
         return body;

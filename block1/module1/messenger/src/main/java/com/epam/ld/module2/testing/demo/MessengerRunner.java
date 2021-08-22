@@ -15,22 +15,37 @@ import java.util.List;
 
 public class MessengerRunner {
 
+    private static final String MESSAGE_BODY = "Hello, #{name}" + System.lineSeparator() +
+            "Today is your birthday, you are now #{age} years old." + System.lineSeparator() +
+            "We have present to you, so give us your #{address} for sending this gift.";
+    private static final List<String> PLACEHOLDERS = Arrays.asList("#{name}", "#{age}", "#{address}");
+
     /**
      * @param args application arguments
      */
     public static void main(String[] args) {
-        String body = "Hello, #{name}" + System.lineSeparator() +
-                "Today is your birthday, you are now #{age} years old." + System.lineSeparator() +
-                "We have present to you, so give us your #{address} for sending this gift.";
-        List<String> expessions = Arrays.asList("#{name}", "#{age}", "#{address}");
-        Template template = new Template(body, expessions);
-        IOManager ioManager = args.length == 0 ? new ConsoleIOManager() : new FileIOManager(new File(args[0]), new File(args[1]));
-        TemplateEngine templateEngine = new TemplateEngine(ioManager);
-        MailServer mailServer = new MailServer(ioManager);
-        Messenger messenger = new Messenger(mailServer, templateEngine);
-        Client client = new Client();
+        var messengerRunner = new MessengerRunner();
+        messengerRunner.run(MESSAGE_BODY, PLACEHOLDERS, args);
+    }
+
+    /**
+     * @param messageBody          message body
+     * @param placeholders         message placeholders
+     * @param applicationArguments application arguments
+     */
+    public void run(String messageBody, List<String> placeholders, String[] applicationArguments) {
+        final var template = new Template(messageBody, placeholders);
+        final var client = new Client();
+
+        IOManager ioManager = applicationArguments.length == 0 ? new ConsoleIOManager() :
+                new FileIOManager(new File(applicationArguments[0]),
+                        new File(applicationArguments[1]));
+
+        var templateEngine = new TemplateEngine(ioManager);
+        final var mailServer = new MailServer(ioManager);
+        var messenger = new Messenger(mailServer, templateEngine);
+
         client.setAddress("Vasya@gmail.com");
         messenger.sendMessage(client, template);
-
     }
 }

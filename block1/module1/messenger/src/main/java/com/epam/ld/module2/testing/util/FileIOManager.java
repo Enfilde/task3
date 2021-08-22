@@ -1,21 +1,22 @@
 package com.epam.ld.module2.testing.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class FileIOManager implements IOManager {
 
-    private static Logger logger = Logger.getLogger(FileIOManager.class.getName());
-    private File sourceFile;
-    private File targetFile;
+    private static final Logger LOGGER = Logger.getLogger(FileIOManager.class.getName());
+    private final File sourceFile;
+    private final File targetFile;
 
     public FileIOManager(File sourceFile, File targetFile) {
         this.sourceFile = sourceFile;
@@ -25,33 +26,24 @@ public class FileIOManager implements IOManager {
     @Override
     public List<String> read() {
         List<String> inputs = new ArrayList<>();
-        try (Scanner scanner = new Scanner(sourceFile)) {
+        try (var scanner = new Scanner(sourceFile, StandardCharsets.UTF_8)) {
             while (scanner.hasNextLine()) {
                 inputs.add(scanner.nextLine());
             }
-        } catch (FileNotFoundException ex) {
-            logger.severe("File : " + sourceFile + " not found");
+        } catch (IOException ex) {
+            LOGGER.severe("File : " + sourceFile + " not found");
         }
         return inputs;
     }
 
     @Override
     public void print(String messageBody) {
-        FileWriter fileWriter = null;
-        try {
+        try (var fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile, true),
+                StandardCharsets.UTF_8))) {
             Files.deleteIfExists(targetFile.toPath());
-            fileWriter = new FileWriter(targetFile);
             fileWriter.write(messageBody);
-        } catch (Exception ex) {
-            logger.severe(ex.getMessage());
-        } finally {
-            if (Objects.nonNull(fileWriter)) {
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    logger.severe(e.getMessage());
-                }
-            }
+        } catch (IOException exception) {
+            LOGGER.severe(exception.getMessage());
         }
     }
 }

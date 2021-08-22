@@ -47,7 +47,7 @@ class MessengerTest {
     @IncludeTest
     @DisplayName("should send message to a specific address")
     void testSendMessage() {
-        Template template = new Template(MESSAGE_BODY, placeholders);
+        final Template template = new Template(MESSAGE_BODY, placeholders);
 
         when(mockTemplateEngine.generateMessage(template, client)).thenReturn(MESSAGE_BODY);
         doNothing().when(mockMailServer).send(client.getAddress(), MESSAGE_BODY);

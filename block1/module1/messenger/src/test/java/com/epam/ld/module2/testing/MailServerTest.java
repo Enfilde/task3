@@ -3,7 +3,6 @@ package com.epam.ld.module2.testing;
 import com.epam.ld.module2.testing.annotation.ExcludeTest;
 import com.epam.ld.module2.testing.annotation.IncludeTest;
 import com.epam.ld.module2.testing.extension.CustomExtension;
-import com.epam.ld.module2.testing.template.TemplateEngine;
 import com.epam.ld.module2.testing.util.ConsoleIOManager;
 import com.epam.ld.module2.testing.util.FileIOManager;
 import com.epam.ld.module2.testing.util.IOManager;
@@ -16,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,17 +54,17 @@ class MailServerTest {
     @IncludeTest
     @DisplayName("Test successful message sending")
     void testSuccessfulMessageSending() throws UnsupportedEncodingException {
-        MailServer mailServer = new MailServer(new ConsoleIOManager());
+        final MailServer mailServer = new MailServer(new ConsoleIOManager());
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream standardOut = System.out;
-        System.setOut(new PrintStream(outputStream));
+        System.setOut(new PrintStream(outputStream, false, StandardCharsets.UTF_8));
         mailServer.send(ADDRESS, MESSAGE_BODY);
 
         System.setOut(standardOut);
 
         String expected = ADDRESS + ": <<" + MESSAGE_BODY + ">>";
 
-        assertEquals(expected,   outputStream.toString(StandardCharsets.UTF_8).trim());
+        assertEquals(expected, outputStream.toString(StandardCharsets.UTF_8).trim());
     }
 }

@@ -44,7 +44,7 @@ class TemplateEngineTest {
     private static final String MESSAGE_BODY = "Hello, #{name}" +
             "Today is your birthday, you are now #{age} years old." +
             "We have present to you, so give us your #{address} for sending this gift.";
-    private static final String NOT_ENOUGH_PLACEHOLDERS ="Not enough placeholders";
+    private static final String NOT_ENOUGH_PLACEHOLDERS = "Not enough placeholders";
     private static final String TEMP_SOURCE_FILE = "tempSourceFile.txt";
     private static final String TEMP_TARGET_FILE = "tempTargetFile.txt";
 
@@ -70,11 +70,11 @@ class TemplateEngineTest {
     @DisplayName("Test successful message generation")
     void testSuccessfulMessageGeneration() {
         TemplateEngine templateEngine = new TemplateEngine(mockIOManager);
-        Template template = new Template(MESSAGE_BODY, placeholders);
+        final Template template = new Template(MESSAGE_BODY, placeholders);
 
         when(mockIOManager.read()).thenReturn(Arrays.asList("#{name}", "#{age}", "#{address}"));
 
-        assertEquals(MESSAGE_BODY,  templateEngine.generateMessage(template, client));
+        assertEquals(MESSAGE_BODY, templateEngine.generateMessage(template, client));
 
         verify(mockIOManager).read();
         verify(mockIOManager, never()).print(anyString());
@@ -89,7 +89,7 @@ class TemplateEngineTest {
         TemplateEngine templateEngine = new TemplateEngine(mockIOManager);
         String body = String.format("Hello, %s", placeholder);
         List<String> placeholders = Collections.singletonList(placeholder);
-        Template template = new Template(body, placeholders);
+        final Template template = new Template(body, placeholders);
 
         when(mockIOManager.read()).thenReturn(Collections.singletonList(placeholder));
 
@@ -109,7 +109,7 @@ class TemplateEngineTest {
         TemplateEngine templateEngine = new TemplateEngine(mockIOManager);
         String messageBody = String.format("Hello, %s", placeholder);
         List<String> placeholders = Collections.singletonList(placeholder);
-        Template template = new Template(messageBody, placeholders);
+        final Template template = new Template(messageBody, placeholders);
 
         when(mockIOManager.read()).thenReturn(Collections.singletonList(placeholder));
 
@@ -139,7 +139,7 @@ class TemplateEngineTest {
 
         Files.write(tempSourceFile.toPath(), placeholders);
 
-        Template template = new Template(MESSAGE_BODY, placeholders);
+        final Template template = new Template(MESSAGE_BODY, placeholders);
         IOManager ioManager = new FileIOManager(tempSourceFile, tempTargetFile);
         TemplateEngine templateEngine = new TemplateEngine(ioManager);
 
@@ -150,7 +150,7 @@ class TemplateEngineTest {
     @IncludeTest
     @DisplayName("Test template engine with spy")
     void testTemplateEngineWithSpy() {
-        Template template = new Template(MESSAGE_BODY, placeholders);
+        final Template template = new Template(MESSAGE_BODY, placeholders);
         TemplateEngine templateEngine = new TemplateEngine(spyIOManager);
 
         doReturn(placeholders).when(spyIOManager).read();
@@ -163,7 +163,7 @@ class TemplateEngineTest {
     @DisplayName("should throw an exception when passed not enough expressions")
     void testThrowExceptionWhenPassedNotEnoughExpressions() {
         List<String> expressions = Arrays.asList("#{name}", "#{age}", "#{address}");
-        Template template = new Template(MESSAGE_BODY, expressions);
+        final Template template = new Template(MESSAGE_BODY, expressions);
         TemplateEngine templateEngine = new TemplateEngine(spyIOManager);
 
         doReturn(Arrays.asList("#{name}", "#{address}")).when(spyIOManager).read();
@@ -177,7 +177,7 @@ class TemplateEngineTest {
         TemplateEngine templateEngine = new TemplateEngine(mockIOManager);
         String body = String.format("Hello, %s", placeholder);
         List<String> placeholders = Collections.singletonList(placeholder);
-        Template template = new Template(body, placeholders);
+        final Template template = new Template(body, placeholders);
 
         when(mockIOManager.read()).thenReturn(Collections.singletonList(placeholder));
 
