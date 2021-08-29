@@ -1,5 +1,7 @@
 package com.epam.ld.ilya;
 
+import com.epam.ld.ilya.entity.Cache;
+
 import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -77,7 +79,7 @@ public class LFUCacheService {
         }
         sameTimeCacheMap.get(cacheTimeMap.get(key)).remove(key);
         String data = cacheMap.get(key).getData();
-        Cache cache = new Cache(data);
+        var cache = new Cache(data);
         cacheMap.put(key, new Cache(data));
         cacheTimeMap.put(key, cache.getTimeFromLastAccess());
         return data;

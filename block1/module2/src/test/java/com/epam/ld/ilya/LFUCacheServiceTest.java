@@ -13,38 +13,49 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LFUCacheServiceTest {
 
+    private static final String KEY = "key";
+    private static final String KEY_1 = "key1";
+    private static final String KEY_2 = "key2";
+    private static final String KEY_3 = "key3";
+    private static final String KEY_4 = "key4";
+    private static final String VALUE = "value";
+    private static final String VALUE_1 = "value1";
+    private static final String VALUE_2 = "value2";
+    private static final String VALUE_3 = "value3";
+    private static final String VALUE_4 = "value4";
+
     LFUCacheService lfuCacheService = new LFUCacheService();
 
     @Test
     @DisplayName("Should return cached data without eviction when get method called")
     void shouldReturnCachedDataWithoutEviction_whenGetMethodCalled() {
-        lfuCacheService.put("key1", "value1");
-        lfuCacheService.put("key2", "value2");
-        lfuCacheService.put("key3", "value3");
+        lfuCacheService.put(KEY_1, VALUE_1);
+        lfuCacheService.put(KEY_2, VALUE_2);
+        lfuCacheService.put(KEY_3, VALUE_3);
 
         assertAll(
-                () -> assertEquals("value1", lfuCacheService.get("key1")),
-                () -> assertEquals("value2", lfuCacheService.get("key2")),
-                () -> assertEquals("value3", lfuCacheService.get("key3"))
+                () -> assertEquals(VALUE_1, lfuCacheService.get(KEY_1)),
+                () -> assertEquals(VALUE_2, lfuCacheService.get(KEY_2)),
+                () -> assertEquals(VALUE_3, lfuCacheService.get(KEY_3))
         );
     }
 
     @Test
     @DisplayName("Should return cached data with eviction when get method called")
     void shouldReturnCachedDataWithEviction_whenGetMethodCalled() throws InterruptedException {
-        lfuCacheService.put("key1", "value1");
-        lfuCacheService.put("key", "value");
+        lfuCacheService.put(KEY_1, VALUE_1);
+        lfuCacheService.put(KEY, VALUE);
         TimeUnit.SECONDS.sleep(3);
-        lfuCacheService.put("key2", "value2");
-        lfuCacheService.get("key");
+        lfuCacheService.put(KEY_2, VALUE_2);
+        lfuCacheService.get(KEY);
         TimeUnit.SECONDS.sleep(3);
-        lfuCacheService.put("key3", "value3");
+        lfuCacheService.put(KEY_3, VALUE_3);
 
         assertAll(
-                () -> assertNull(lfuCacheService.get("key1")),
-                () -> assertEquals("value",lfuCacheService.get("key")),
-                () -> assertEquals("value2", lfuCacheService.get("key2")),
-                () -> assertEquals("value3", lfuCacheService.get("key3"))
+                () -> assertNull(lfuCacheService.get(KEY_1)),
+                () -> assertEquals(VALUE, lfuCacheService.get(KEY)),
+                () -> assertEquals(VALUE_2, lfuCacheService.get(KEY_2)),
+                () -> assertEquals(VALUE_3, lfuCacheService.get(KEY_3))
         );
     }
 
@@ -53,16 +64,16 @@ class LFUCacheServiceTest {
     void shouldRemoveLFUElement_whenGetMethodCalled() {
         LFUCacheService lfuCacheService = new LFUCacheService(3);
 
-        lfuCacheService.put("key1","value1");
-        lfuCacheService.put("key2","value2");
-        lfuCacheService.get("key1");
-        lfuCacheService.put("key3","value3");
-        lfuCacheService.put("key4","value4");
+        lfuCacheService.put(KEY_1, VALUE_1);
+        lfuCacheService.put(KEY_2, VALUE_2);
+        lfuCacheService.get(KEY_1);
+        lfuCacheService.put(KEY_3, VALUE_3);
+        lfuCacheService.put(KEY_4, VALUE_4);
 
         Set<String> expected = new LinkedHashSet<>();
-        expected.add("key1");
-        expected.add("key3");
-        expected.add("key4");
+        expected.add(KEY_1);
+        expected.add(KEY_3);
+        expected.add(KEY_4);
 
         assertEquals(expected, lfuCacheService.getCacheMap().keySet());
     }
@@ -72,10 +83,10 @@ class LFUCacheServiceTest {
     void shouldGetCacheEvictionsNumber_whenGetCacheEvictionNumberCalled() {
         LFUCacheService lfuCacheService = new LFUCacheService(3);
 
-        lfuCacheService.put("key1","value1");
-        lfuCacheService.put("key2","value2");
-        lfuCacheService.put("key3","value3");
-        lfuCacheService.put("key4","value4");
+        lfuCacheService.put(KEY_1, VALUE_1);
+        lfuCacheService.put(KEY_2, VALUE_2);
+        lfuCacheService.put(KEY_3, VALUE_3);
+        lfuCacheService.put(KEY_4, VALUE_4);
 
         assertEquals(1, lfuCacheService.getCacheEvictionsNumber());
     }

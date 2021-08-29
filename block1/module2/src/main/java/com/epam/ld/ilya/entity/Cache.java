@@ -1,4 +1,4 @@
-package com.epam.ld.ilya;
+package com.epam.ld.ilya.entity;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -10,7 +10,7 @@ public class Cache {
 
     private final LocalTime timeFromLastAccess;
 
-    Cache(String data) {
+    public Cache(String data) {
         this.data = data;
         timeFromLastAccess = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
