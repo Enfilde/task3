@@ -24,10 +24,14 @@ public class Cache {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cache cache = (Cache) o;
+    public boolean equals(Object element) {
+        if (this == element) {
+            return true;
+        }
+        if (element == null || getClass() != element.getClass()) {
+            return false;
+        }
+        Cache cache = (Cache) element;
         return Objects.equals(data, cache.data) && Objects.equals(timeFromLastAccess, cache.timeFromLastAccess);
     }
 

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class LFUCacheService {
+public class LFUCacheService implements CacheService {
 
     private static final Logger LOGGER = Logger.getLogger(LFUCacheService.class.getName());
 
@@ -30,15 +30,22 @@ public class LFUCacheService {
     private final int maximumSize;
     private int cacheEvictionsNumber;
 
+    /**
+     * LFU cache service constructor
+     */
     public LFUCacheService() {
         this.maximumSize = DEFAULT_MAXIMUM_CACHE_SIZE;
         cacheMap = new ConcurrentHashMap<>();
         cacheTimeMap = new ConcurrentHashMap<>();
         sameTimeCacheMap = new ConcurrentSkipListMap<>();
         service = Executors.newSingleThreadScheduledExecutor();
-        cleanExpiredCache();
+        cleanExpiredCache(); // clean expired cache
     }
 
+    /**
+     * LFU cache service constructor
+     * @param maximumSize cache volume
+     */
     public LFUCacheService(int maximumSize) {
         this.maximumSize = maximumSize;
         cacheMap = new ConcurrentHashMap<>();
@@ -48,6 +55,7 @@ public class LFUCacheService {
         cleanExpiredCache();
     }
 
+    @Override
     public void put(String key, String data) {
         var cache = new Cache(data);
         LocalTime timeFromLastAccess = cache.getTimeFromLastAccess();
@@ -73,6 +81,7 @@ public class LFUCacheService {
         }
     }
 
+    @Override
     public String get(String key) {
         if (!cacheMap.containsKey(key)) {
             return null;
@@ -98,14 +107,15 @@ public class LFUCacheService {
     }
 
     private void cleanExpiredCache() {
-        var thread = new Thread(() -> {
+        Runnable thread = () -> {
             Set<String> expired = getExpiredCacheKeys();
             cacheEvictionsNumber += expired.size();
             expired.forEach(cache -> {
                 cacheMap.remove(cache);
                 LOGGER.info(REMOVED_FROM_CACHE_MESSAGE + cache);
             });
-        });
+        };
+
         service.scheduleAtFixedRate(thread, 0, 1, TimeUnit.SECONDS);
     }
 

@@ -1,6 +1,5 @@
 package com.epam.ld.ilya;
 
-import com.epam.ld.ilya.entity.CustomEntity;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -10,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-public class LRUCacheService {
+public class LRUCacheService implements CacheService {
 
     private static final Logger LOGGER = Logger.getLogger(LRUCacheService.class.getName());
 
@@ -21,8 +20,8 @@ public class LRUCacheService {
 
     private final int capacity;
 
-    private LoadingCache<String, CustomEntity> loadingCache;
-    private RemovalListener<String, CustomEntity> removalListener;
+    private LoadingCache<String, String> loadingCache;
+    private RemovalListener<String, String> removalListener;
     private int numberOfCacheEvictions;
     private long wholeTimeOfEvictions;
 
@@ -36,6 +35,9 @@ public class LRUCacheService {
         return numberOfCacheEvictions;
     }
 
+    /**
+     * set removal listener
+     */
     public void setRemovalListener() {
         long startTime = System.currentTimeMillis();
         removalListener = notification -> {
@@ -45,31 +47,45 @@ public class LRUCacheService {
         };
         long totalTime = System.currentTimeMillis() - startTime;
         LOGGER.info(TIME_OF_REMOVAL_MESSAGE + totalTime);
-        wholeTimeOfEvictions += totalTime;
+        wholeTimeOfEvictions += totalTime; // whole time of cache evictions
     }
 
+    /**
+     * init loading cache
+     */
     public void initLoadingCache() {
-        CacheLoader<String, CustomEntity> cacheLoader = new CacheLoader<String, CustomEntity>() {
+        CacheLoader<String, String> cacheLoader = new CacheLoader<>() {
             @Override
-            public CustomEntity load(String key) {
-                return new CustomEntity(key);
+            public String load(String key) {
+                return key;
             }
         };
-        loadingCache = CacheBuilder.newBuilder().maximumSize(capacity).expireAfterAccess(5, TimeUnit.SECONDS)
-                .removalListener(removalListener).concurrencyLevel(Runtime.getRuntime().availableProcessors())
+        loadingCache = CacheBuilder
+                .newBuilder()
+                .maximumSize(capacity)
+                .expireAfterAccess(5, TimeUnit.SECONDS)
+                .removalListener(removalListener)
+                .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 .build(cacheLoader);
     }
 
-    public CustomEntity getIfPresentLoadingCache(String key) {
+    @Override
+    public void put(String key, String data) {
+        loadingCache.put(key, data);
+    }
+
+    @Override
+    public String get(String key) {
+        try {
+            return loadingCache.get(key);
+        } catch (ExecutionException e) {
+            LOGGER.warning(e.getMessage());
+        }
+        return null;
+    }
+
+    public String getIfPresent(String key) {
         return loadingCache.getIfPresent(key);
-    }
-
-    public CustomEntity getCacheKeyLoadingCache(String key) throws ExecutionException {
-        return loadingCache.get(key);
-    }
-
-    public void putLoadingCache(String key, CustomEntity entity) {
-        loadingCache.put(key, entity);
     }
 
     public void getAverageTimeOfEvictions() {

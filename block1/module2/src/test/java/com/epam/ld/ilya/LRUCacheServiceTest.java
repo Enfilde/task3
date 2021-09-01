@@ -1,6 +1,5 @@
 package com.epam.ld.ilya;
 
-import com.epam.ld.ilya.entity.CustomEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +15,10 @@ class LRUCacheServiceTest {
     private static final String KEY_B = "B";
     private static final String KEY_C = "C";
     private static final String KEY_D = "D";
-    private static final CustomEntity ENTITY_A = new CustomEntity("aaa");
-    private static final CustomEntity ENTITY_B = new CustomEntity("bbb");
-    private static final CustomEntity ENTITY_C = new CustomEntity("ccc");
-    private static final CustomEntity ENTITY_D = new CustomEntity("ddd");
+    private static final String VALUE_A = "aaa";
+    private static final String VALUE_B = "bbb";
+    private static final String VALUE_C = "ccc";
+    private static final String VALUE_D = "ddd";
 
     @Test
     @DisplayName("Should get cache key when get cache method called")
@@ -27,13 +26,11 @@ class LRUCacheServiceTest {
         LRUCacheService lruCache = new LRUCacheService(3);
         lruCache.setRemovalListener();
         lruCache.initLoadingCache();
-        lruCache.putLoadingCache(KEY_A, ENTITY_A);
-        lruCache.putLoadingCache(KEY_B, ENTITY_B);
-        lruCache.putLoadingCache(KEY_C, ENTITY_C);
+        lruCache.put(KEY_A, VALUE_A);
+        lruCache.put(KEY_B, VALUE_B);
+        lruCache.put(KEY_C, VALUE_C);
 
-        CustomEntity customEntity = lruCache.getCacheKeyLoadingCache(KEY_A);
-
-        assertEquals(ENTITY_A, customEntity);
+        assertEquals(VALUE_A, lruCache.get(KEY_A));
     }
 
     @Test
@@ -42,13 +39,12 @@ class LRUCacheServiceTest {
         LRUCacheService lruCache = new LRUCacheService(3);
         lruCache.setRemovalListener();
         lruCache.initLoadingCache();
-        lruCache.putLoadingCache(KEY_A, ENTITY_A);
-        lruCache.putLoadingCache(KEY_B, ENTITY_B);
-        lruCache.putLoadingCache(KEY_C, ENTITY_C);
+        lruCache.put(KEY_A, VALUE_A);
+        lruCache.put(KEY_B, VALUE_B);
+        lruCache.put(KEY_C, VALUE_C);
 
-        CustomEntity customEntity = lruCache.getIfPresentLoadingCache("V");
 
-        assertNull(customEntity);
+        assertNull(lruCache.getIfPresent("V"));
     }
 
     @Test
@@ -57,18 +53,18 @@ class LRUCacheServiceTest {
         LRUCacheService lruCache = new LRUCacheService(3);
         lruCache.setRemovalListener();
         lruCache.initLoadingCache();
-        lruCache.putLoadingCache(KEY_A, ENTITY_A);
-        lruCache.putLoadingCache(KEY_B, ENTITY_B);
-        lruCache.putLoadingCache(KEY_C, ENTITY_C);
-        lruCache.putLoadingCache(KEY_D, ENTITY_D);
+        lruCache.put(KEY_A, VALUE_A);
+        lruCache.put(KEY_B, VALUE_B);
+        lruCache.put(KEY_C, VALUE_C);
+        lruCache.put(KEY_D, VALUE_D);
 
-        CustomEntity customEntity = lruCache.getIfPresentLoadingCache(KEY_A);
+        String result = lruCache.getIfPresent(KEY_A);
 
         assertEquals(1, lruCache.getNumberOfCacheEvictions());
-        assertNull(customEntity);
+        assertNull(result);
         assertAll(
                 () -> assertEquals(1, lruCache.getNumberOfCacheEvictions()),
-                () -> assertNull(customEntity)
+                () -> assertNull(result)
         );
     }
 
@@ -78,21 +74,21 @@ class LRUCacheServiceTest {
         LRUCacheService lruCache = new LRUCacheService(3);
         lruCache.setRemovalListener();
         lruCache.initLoadingCache();
-        lruCache.putLoadingCache(KEY_A, ENTITY_A);
-        lruCache.putLoadingCache(KEY_B, ENTITY_B);
-        lruCache.getIfPresentLoadingCache(KEY_A);
-        lruCache.putLoadingCache(KEY_C, ENTITY_C);
-        lruCache.getIfPresentLoadingCache(KEY_B);
-        lruCache.putLoadingCache(KEY_D, ENTITY_D);
-        lruCache.putLoadingCache(KEY_A, ENTITY_A);
+        lruCache.put(KEY_A, VALUE_A);
+        lruCache.put(KEY_B, VALUE_B);
+        lruCache.getIfPresent(KEY_A);
+        lruCache.put(KEY_C, VALUE_C);
+        lruCache.getIfPresent(KEY_B);
+        lruCache.put(KEY_D, VALUE_D);
+        lruCache.put(KEY_A, VALUE_A);
 
-        CustomEntity deletedEntity = lruCache.getIfPresentLoadingCache(KEY_C);
+        String deletedEntity = lruCache.getIfPresent(KEY_C);
         lruCache.getAverageTimeOfEvictions();
 
         assertAll(
-                () -> assertEquals(ENTITY_A, lruCache.getIfPresentLoadingCache(KEY_A)),
-                () -> assertEquals(ENTITY_D, lruCache.getIfPresentLoadingCache(KEY_D)),
-                () -> assertEquals(ENTITY_B, lruCache.getIfPresentLoadingCache(KEY_B)),
+                () -> assertEquals(VALUE_A, lruCache.getIfPresent(KEY_A)),
+                () -> assertEquals(VALUE_D, lruCache.getIfPresent(KEY_D)),
+                () -> assertEquals(VALUE_B, lruCache.getIfPresent(KEY_B)),
                 () -> assertNull(deletedEntity)
         );
     }
