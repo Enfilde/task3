@@ -1,5 +1,6 @@
 package iterator
 
+
 class StringIterator implements IStringIterator {
 
     private static final char LEFT_BRACKET = '(' as char
@@ -8,40 +9,53 @@ class StringIterator implements IStringIterator {
     private static final String EMPTY = ""
     private static final String SPACE = " "
 
-    private String string
+    private String stringExpression
 
     private int currentIndex
 
-    StringIterator(String string) {
-        this.string = string.replace(SPACE, EMPTY)
+    /**
+     * @param stringExpression String that contains a mathematical expression
+     */
+    StringIterator(String stringExpression) {
+        this.stringExpression = stringExpression?.replace(SPACE, EMPTY)
         currentIndex = 0
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     boolean hasNext() {
-        return string != null && !string.isEmpty() && currentIndex < string.length()
+        return stringExpression != null && !stringExpression.isEmpty() && currentIndex < stringExpression.length()
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return number or operator
+     */
     @Override
     String next() {
-        StringBuilder operand = new StringBuilder();
-        char element = string.charAt(currentIndex);
+        StringBuilder operand = new StringBuilder()
+        char element = stringExpression?.charAt(currentIndex)
 
         while (Character.isDigit(element) || element == POINT || (currentIndex == 0 && element == DASH) ||
-                (currentIndex > 0 && string.charAt(currentIndex - 1) == LEFT_BRACKET as char && element == DASH)) {
-            operand.append(element);
-            currentIndex++;
+                (currentIndex > 0 && stringExpression.charAt(currentIndex - 1) == LEFT_BRACKET as char && element == DASH)) {
+            operand.append(element)
+            currentIndex++
 
-            if (currentIndex == string.length())
-                return operand.toString();
+            if (currentIndex == stringExpression.length()) {
+                return operand.toString()
+            }
 
-            element = string.charAt(currentIndex);
+            element = stringExpression?.charAt(currentIndex)
         }
 
-        if (operand.length() != 0)
-            return operand.toString();
+        if (operand.length() != 0) {
+            return operand.toString()
+        }
 
-        currentIndex++;
-        return Character.toString(element);
+        currentIndex++
+        return Character.toString(element)
     }
 }
