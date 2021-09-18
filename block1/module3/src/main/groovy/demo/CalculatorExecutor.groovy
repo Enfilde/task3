@@ -1,12 +1,10 @@
 package demo
 
-
 import container.IOperatorsPriorities
 import container.OperatorsPriorities
 import iterator.IStringIterator
 import iterator.StringIterator
 import service.Calculator
-
 
 class CalculatorExecutor {
 
@@ -21,20 +19,22 @@ class CalculatorExecutor {
 
         Calculator calculator = new Calculator(priorities, iterator, { BigDecimal x, BigDecimal y, String operation ->
             BigDecimal result = 0
-            println "first " + x
-            println "second " + y
             switch (operation) {
                 case "+":
                     result = x.add(y)
+                    logMathOperation(x, operation, y, result)
                     break
                 case "-":
                     result = x.subtract(y)
+                    logMathOperation(x, operation, y, result)
                     break
                 case "*":
                     result = x.multiply(y)
+                    logMathOperation(x, operation, y, result)
                     break
                 case "/":
                     result = x.divide(y)
+                    logMathOperation(x, operation, y, result)
                     break
             }
             return result
@@ -67,5 +67,9 @@ class CalculatorExecutor {
 
     private static String readLine() {
         return System.in.newReader().readLine()
+    }
+
+    private static void logMathOperation(BigDecimal x, String operator, BigDecimal y, BigDecimal result) {
+        println("$x $operator $y = $result")
     }
 }
