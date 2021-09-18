@@ -9,7 +9,7 @@ import iterator.StringIterator
  */
 class Calculator {
 
-    private static final String LEFT_BRACKET = "(";
+    private static final String LEFT_BRACKET = "("
     private static final String RIGHT_BRACKET = ")"
 
     /**
@@ -25,20 +25,20 @@ class Calculator {
     /**
      * Stack for storing operands.
      */
-    private Deque<Double> numbers
+    private Deque<BigDecimal> numbers
 
     /**
      * Stack for storing operators.
      */
     private Deque<String> operators
 
-    private Closure<Double> baseCalculations
+    private Closure<BigDecimal> baseCalculations
 
     /**
      * @param priorities object with operation priority
      * @param iterator iterator which contains a mathematical expression
      */
-    Calculator(OperatorsPriorities priorities, StringIterator iterator, Closure<Double> baseCalculations) {
+    Calculator(OperatorsPriorities priorities, StringIterator iterator, Closure<BigDecimal> baseCalculations) {
         this.priorities = priorities
         this.iterator = iterator
         numbers = new LinkedList<>()
@@ -54,12 +54,12 @@ class Calculator {
      * @throws NullPointerException if the string is not a valid mathematical expression
      * @throws EmptyStackException if the string is not a valid mathematical expression
      */
-    Double getResult() throws NullPointerException, EmptyStackException {
+    BigDecimal getResult() throws NullPointerException, EmptyStackException {
         while (iterator.hasNext()) {
             String element = iterator.next()
 
             try {
-                double number = Double.parseDouble(element)
+                BigDecimal number = new BigDecimal(element)
                 numbers.push(number)
             } catch (NumberFormatException ignored) {
                 if (element == LEFT_BRACKET) {
@@ -104,8 +104,8 @@ class Calculator {
      */
     private void calculate() throws NoSuchElementException {
         String operator = operators.pop()
-        Double number2 = numbers.pop()
-        Double number1 = numbers.pop()
+        BigDecimal number2 = numbers.pop()
+        BigDecimal number1 = numbers.pop()
 
         numbers.push(baseCalculations.call(number1, number2, operator))
     }

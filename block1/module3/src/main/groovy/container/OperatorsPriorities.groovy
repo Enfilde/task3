@@ -22,16 +22,16 @@ class OperatorsPriorities implements IOperatorsPriorities {
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     */
     @Override
     void addOperator(String operator, int priority) {
         map.put(operator, priority)
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     */
     @Override
     void deleteOperator(String operator) {
         map.remove(operator)

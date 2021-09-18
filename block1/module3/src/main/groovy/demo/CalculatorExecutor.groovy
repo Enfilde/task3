@@ -19,29 +19,29 @@ class CalculatorExecutor {
         fillOperators(priorities)
         IStringIterator iterator = new StringIterator(expression)
 
-        Calculator calculator = new Calculator(priorities, iterator, { Double x, Double y, String operation ->
-            Double result = 0
+        Calculator calculator = new Calculator(priorities, iterator, { BigDecimal x, BigDecimal y, String operation ->
+            BigDecimal result = 0
+            println "first " + x
+            println "second " + y
             switch (operation) {
                 case "+":
-                    result = x + y
+                    result = x.add(y)
                     break
                 case "-":
-                    result = x - y
+                    result = x.subtract(y)
                     break
                 case "*":
-                    result = x * y
+                    result = x.multiply(y)
                     break
                 case "/":
-                    result = x / y
+                    result = x.divide(y)
                     break
-                case "^":
-                    result = x**x
             }
             return result
         })
 
         try {
-            Double result = calculator.getResult()
+            BigDecimal result = calculator.getResult()
             println("Result = " + result)
         } catch (NullPointerException | NoSuchElementException ignored) {
             println("$expression is incorrect math expression!")
@@ -63,7 +63,6 @@ class CalculatorExecutor {
         priorities.addOperator("-", 1)
         priorities.addOperator("*", 2)
         priorities.addOperator("/", 2)
-        priorities.addOperator("^",3)
     }
 
     private static String readLine() {
