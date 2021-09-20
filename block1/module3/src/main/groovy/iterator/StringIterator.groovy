@@ -17,6 +17,7 @@ class StringIterator implements IStringIterator {
      * @param stringExpression String that contains a mathematical expression
      */
     StringIterator(String stringExpression) {
+        println "text
         this.stringExpression = stringExpression?.replace(SPACE, EMPTY)
         currentIndex = 0
     }
