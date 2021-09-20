@@ -9,6 +9,8 @@ import service.Calculator
 class CalculatorExecutor {
 
     static void main(String[] args) {
+        
+        println "change"
 
         enterYourExpression()
         String expression = readLine()
