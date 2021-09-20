@@ -55,6 +55,7 @@ class Calculator {
      * @throws EmptyStackException if the string is not a valid mathematical expression
      */
     BigDecimal getResult() throws NullPointerException, EmptyStackException {
+        println "text"
         while (iterator.hasNext()) {
             String element = iterator.next()
 
