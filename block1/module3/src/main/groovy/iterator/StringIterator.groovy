@@ -36,6 +36,7 @@ class StringIterator implements IStringIterator {
      */
     @Override
     String next() {
+        println "text"
         StringBuilder operand = new StringBuilder()
         char element = stringExpression?.charAt(currentIndex)
 
